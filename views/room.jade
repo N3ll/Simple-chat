@@ -1,0 +1,78 @@
+extends layout
+
+block content
+
+    .container-fluid.wrap
+        .row
+            .col-sm-3.sidebar-users
+                ul#users
+                    if roomReturned.users.length
+                        for u in roomReturned.users
+                            li=u.username
+
+                .btns
+                    button.btn-util.btn.btn-primary ALl rooms
+                    a(href="/logout").btn-util.logout.btn.btn-primary Log out
+            .col-sm-9
+                .intro
+                    h2="Welcome to " + roomReturned.name
+                    p="Topic: " + roomReturned.topic
+                .msgs
+                    ul#messages
+                        if roomReturned.messages.length
+                            for msg in roomReturned.messages
+                                li
+                                    p #[span.author #{msg.user.username}: ] #{msg.text}
+                .form
+                    form
+                        .row
+                            .col-sm-9
+                                input(type="text" id="m" class="form-control col-sm-9" placeholder="Write a message here...")
+                            .col-sm-3
+                                button#send-message-btn.btn.btn-primary Send
+
+    script(src="/socket.io/socket.io.js")
+    script(src="https://code.jquery.com/jquery-3.1.1.min.js")
+    script.
+        $('#messages').scrollTop($('#messages')[0].scrollHeight);
+
+        var socket = io();
+        var path = window.location.pathname;
+
+        var newUser = {user: "#{loggedUser}", path: path};
+
+        socket.emit('new user', newUser);
+
+        $("form").on("submit", function (e) {
+            e.preventDefault();
+
+
+            var data = {
+                'text': $('#m').val(),
+            }
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                data: data,
+                success: function (response) {
+                    console.log("Error" + response);
+                }
+            });
+
+            data.path = path;
+            data.username = "#{loggedUser}";
+            socket.emit('chat message', data);
+            $('#m').val('');
+        });
+
+        socket.on('chat message', function (msg) {
+            $('#messages').append('<li><p><span class="author">' + msg.username + ': </span>' + msg.text + '</p></li>');
+            $('#messages').scrollTop($('#messages')[0].scrollHeight);
+        });
+
+
+        socket.on('new user', function (msg) {
+            $('#messages').append('<li class="new-user"><p><span class="author">' + msg.user + ' </span> joined the chat</p></li>');
+            $('#messages').scrollTop($('#messages')[0].scrollHeight);
+        });

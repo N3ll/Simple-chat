@@ -1,0 +1,56 @@
+extends layout
+
+block content
+
+    .container-fluid.rooms
+        .welcome
+            h1 Welcome!
+            h3 Pick a room or create new
+            form
+                .form-group
+                    label Group name:
+                    input#r.form-control
+                    label Topic
+                    input#n.form-control
+                button.btn.btn-primary Send
+        ul#rooms
+            for room in roomsReturned
+                li
+                    h2
+                        a(href="/room/" + room.name)=room.name
+                    p=room.topic
+            else
+                li sorry, no books!
+
+    script(src="/socket.io/socket.io.js")
+    script(src="https://code.jquery.com/jquery-3.1.1.min.js")
+    script.
+        var socket = io();
+        $("form").on("submit", function (e) {
+            e.preventDefault();
+            var data = {
+                'name': $('#r').val(),
+                'topic': $('#n').val()
+            }
+
+            console.log(data);
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                data: data,
+                success: function (data) {
+                    console.log(data.redirect);
+                    window.location = data.redirect;
+                }
+            });
+
+
+            socket.emit('room added', data);
+            $('#r').val('');
+            $("#n").val('');
+
+        });
+
+        socket.on('room added', function (room) {
+            $('#rooms').prepend('<li><h2><a href=\"\/room\/' + room.name + '\">' + room.name + '</h2></a><p>' + room.topic + '</p></li>');
+        });
