@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var exports = module.exports = {};
 var mongoose = require('mongoose');
-var schema = require('../model/schema');
 
 //Connect to database
 mongoose.connect('mongodb://localhost/chatMandatory');

@@ -11,7 +11,7 @@ block content
                             li=u.username
 
                 .btns
-                    button.btn-util.btn.btn-primary ALl rooms
+                    a(href="/allRooms").btn-util.btn.btn-primary All rooms
                     a(href="/logout").btn-util.logout.btn.btn-primary Log out
             .col-sm-9
                 .intro
@@ -46,9 +46,8 @@ block content
         $("form").on("submit", function (e) {
             e.preventDefault();
 
-
             var data = {
-                'text': $('#m').val(),
+                'text': $('#m').val()
             }
 
             $.ajax({

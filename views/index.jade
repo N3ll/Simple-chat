@@ -4,8 +4,14 @@ block content
     .container-fluid
         form.form-signin(method="post", role="form")
             h2.form-signin-heading Please enter your credentials
+            if warning == null
+                label Username:
+            else
+                label.warning=warning
             input.input-block-level#username(type="text", name="username", placeholder="Username")
+            label Email:
             input.input-block-level#email(type="text", name="email", placeholder="Email address")
+            label Password:
             input.input-block-level#password(type="password", name="password", placeholder="Password")
             input.btn.btn-large.btn-primary(type="submit", value="Go chat with some superheroes")
 

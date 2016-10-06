@@ -13,7 +13,6 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var room = require('./routes/room');
 var allRooms = require('./routes/allRooms');
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

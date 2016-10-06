@@ -22,14 +22,23 @@ router.post("/", function (req, res, next) {
     session = req.session;
     session.email = req.body.email;
 
-    var instance = new schema.Users(req.body);
-    instance.save(function (err, user) {
+    schema.Users.find({username:req.body.username},function(err, doc){
         if (err)
             return console.error(err);
-        console.log("Save success: ", user);
+        console.log(doc);
+        if(doc.length==0){
+            var instance = new schema.Users(req.body);
+            instance.save(function (err, user) {
+                if (err)
+                    return console.error(err);
+                console.log("Save success: ", user);
+            });
 
+            res.redirect("/allRooms");
+        }else{
+            res.render("index",{"warning":"This username is already taken"});
+        }
     });
-    res.redirect("/allRooms");
 });
 
 module.exports = router;

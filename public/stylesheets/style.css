@@ -123,3 +123,7 @@ ul {
     padding: 19px 29px 29px;
     margin: 10px auto;
 }
+
+.warning{
+    color: red;
+}
